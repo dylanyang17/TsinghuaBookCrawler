@@ -15,7 +15,10 @@ def get_input():
     获得输入的各参数
     :return: [username, password, url, processing_num, del_img]
     """
-    parser = argparse.ArgumentParser(description='Download e-book from http://reserves.lib.tsinghua.edu.cn. For example, "python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".')
+    parser = argparse.ArgumentParser(description='Download e-book from http://reserves.lib.tsinghua.edu.cn. '
+                                                 'By default, the number of processes is four and the temporary images '
+                                                 'will not be preserved. \nFor example, '
+                                                 '"python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".')
     parser.add_argument('url')
     parser.add_argument('-n', help='Optional. The number of processes.', default=4)
     parser.add_argument('-p', '--preserve', help='Optional. Preserve the temporary images.', action='store_true')

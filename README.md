@@ -2,35 +2,45 @@
 
 ## 背景
 
-最近疫情严重，为了方便大家在线学习，写了一个爬清华教参的 python 脚本，因为还有其它很多事情要处理，所以就写得比较简单了，也没有加图形界面。脚本中用户名和密码均仅用于清华服务的认证，不保存在本地，也不会上传到别处，这点我可以用人格担保，不放心的同学也可以自行阅读检查代码。
+最近疫情严重，为了方便大家在线学习，写了一个爬清华教参的 python 脚本，因为还有其它很多事情要处理，所以就写得比较简单了，也没有加图形界面。脚本中学号和密码均仅用于清华官方服务的认证，不保存在本地，也不会上传到别处，这点我可以用人格担保，不放心的同学也可以自行阅读检查代码。
 
-另外注意此脚本仅供方便大家学习之用，请勿将下载得到的电子书外传。
+另外注意此脚本仅供方便大家学习之用，请勿将下载得到的电子书外传，以便于保护版权。一切滥用该脚本导致的不良后果，作者均不担责。
 
 ## 使用说明
 
-清华教参平台：http://reserves.lib.tsinghua.edu.cn
-
-main.py 中的前五行为可以设置的部分：
-
-```
-username = ''
-password = ''
-url = 'http://reserves.lib.tsinghua.edu.cn/book3//00004804/00004804000/FLASH/index.html'
-processing_num = 8
-del_img = True
-```
-
-username 为学号，password 为密码，url 为需要爬取的书籍（点击阅读全文之后的页面，这里暂时只能用http），processing\_num 为下载使用的进程数，del\_img 为是否删除下载过程中临时保存的图片。
-
-设置完毕之后直接运行 main.py 即可，会自动下载到download目录下。
-
-请大家注意自己的账户安全，下载完毕之后将username和password这两项清空。
-
-## 环境
+### 环境
 
 python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
 
+### 使用
+
+用于下载清华教参平台上的电子书pdf版本，清华教参平台：http://reserves.lib.tsinghua.edu.cn
+
+使用 ``python main.py -h`` 可以打印帮助信息：
+
+```
+usage: main.py [-h] [-n N] [-p] url
+
+Download e-book from http://reserves.lib.tsinghua.edu.cn. By default, the number of processes is four and the temporary images will not be preserved.
+
+For example, "python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".
+
+positional arguments:
+  url
+
+optional arguments:
+  -h, --help      show this help message and exit
+  -n N            Optional. The number of processes.
+  -p, --preserve  Optional. Preserve the temporary images.
+```
+
+一般来说不加参数使用即可，默认进程数为4，例子如上帮助信息所述：``python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html``，会自动下载到download目录下。
+
 ## 特性
+
+### v1.1
+
+* 更改参数输入方式，提高安全性。
 
 ### v1.0
 
