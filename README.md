@@ -16,7 +16,7 @@ python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
 
 ### 使用
 
-用于下载清华教参平台上的电子书pdf版本，清华教参平台：http://reserves.lib.tsinghua.edu.cn。 找到自己需要的书籍之后，进入阅读界面，将网址复制过来即可。此处也可用https，但教参平台的证书过期，会导致打印很多Warning。
+用于下载清华教参平台上的电子书pdf版本，清华教参平台：http://reserves.lib.tsinghua.edu.cn 。找到自己需要的书籍之后，进入阅读界面，将网址复制过来即可。此处也可用https，但教参平台的证书过期，会导致打印很多Warning。
 
 使用 ``python main.py -h`` 可以打印帮助信息：
 
