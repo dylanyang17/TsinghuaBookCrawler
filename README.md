@@ -41,6 +41,8 @@ python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
 
 ## 示例
 
+如果无法直接显示，可以下载下来看，图片存储在 example 文件夹下。
+
 ![example1](https://github.com/lflame/TsinghuaBookCrawler/blob/master/example/1.png)
 
 ![example2](https://github.com/lflame/TsinghuaBookCrawler/blob/master/example/2.png)
