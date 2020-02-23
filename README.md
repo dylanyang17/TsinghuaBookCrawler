@@ -18,6 +18,8 @@ python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
 
 用于下载清华教参平台上的电子书pdf版本，清华教参平台：http://reserves.lib.tsinghua.edu.cn，找到自己需要的书籍之后，进入阅读界面，将网址复制过来即可。
 
+爬取的url暂时只支持http（但是进行身份认证时使用https）。
+
 使用 ``python main.py -h`` 可以打印帮助信息：
 
 ```

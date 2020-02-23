@@ -14,7 +14,7 @@ def auth_get(url, session, username, password, timeout=None):
     :return: 返回获得的响应
     """
     login_url = 'https://id.tsinghua.edu.cn/do/off/ui/auth/login/check'
-    res = session.get(url, timeout=timeout)
+    res = session.get(url, timeout=timeout, verify=False)
     try:
         if str(res.content, 'utf-8').find('清华大学用户电子身份服务系统') != -1:
             print('正在进行自动认证...')
@@ -29,7 +29,7 @@ def auth_get(url, session, username, password, timeout=None):
                 sys.exit()
             print('认证成功')
             ticket_url = tmp.group(1)
-            res = session.get(ticket_url, timeout=timeout)
+            res = session.get(ticket_url, timeout=timeout, verify=False)
     except UnicodeDecodeError:
         pass
     return res

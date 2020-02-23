@@ -50,6 +50,10 @@ if __name__ == '__main__':
     if book_name.find('CDATA') != -1:
         book_name = re.search('CDATA\\[(.*?)\\]', book_name).group(1).strip()
     print('书名: %s  页数: %d' % (book_name, page_count))
+    save_dir = os.path.join('download', book_name)
+    if os.path.exists(os.path.join(save_dir, book_name + '.pdf')):
+        print('该书已经下载过, 停止下载')
+        sys.exit()
 
     img_suffix = ''
     for suf in candidate_img_suffix:
@@ -65,7 +69,6 @@ if __name__ == '__main__':
     else:
         print('图片格式:', img_suffix)
 
-    save_dir = os.path.join('download', book_name)
     download_imgs(session, username, password, img_path, img_suffix, page_count, save_dir,
                   processing_num=processing_num)
     print('图片下载完成, 开始转换..')
