@@ -16,9 +16,7 @@ python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
 
 ### 使用
 
-用于下载清华教参平台上的电子书pdf版本，清华教参平台：http://reserves.lib.tsinghua.edu.cn，找到自己需要的书籍之后，进入阅读界面，将网址复制过来即可。
-
-爬取的url暂时只支持http（但是进行身份认证时使用https）。
+用于下载清华教参平台上的电子书pdf版本，清华教参平台：http://reserves.lib.tsinghua.edu.cn，找到自己需要的书籍之后，进入阅读界面，将网址复制过来即可。此处也可用https，但教参平台的证书过期，会导致打印很多Warning。
 
 使用 ``python main.py -h`` 可以打印帮助信息：
 
@@ -46,7 +44,10 @@ optional arguments:
 
 ### v1.1
 
-* 更改参数输入方式，提高安全性。
+* 更改参数输入方式，提高安全性；
+* 教参平台url支持 https。
+
+版本 v1.0 中对于教参平台url不支持使用https，是因为教参平台的证书已经过期，会导致验证出错。考虑之后还是将 get 的 verify 关掉了，这会导致在使用https的时候产生很多警告（而不是直接抛出异常）。不过身份认证平台的证书并未过期，故该脚本对于涉及学号和密码的请求一直都使用更加安全的 https。
 
 ### v1.0
 

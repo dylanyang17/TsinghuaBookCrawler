@@ -5,7 +5,7 @@ import sys
 
 def auth_get(url, session, username, password, timeout=None):
     """
-    利用session采用自动认证清华服务器的GET访问，若已经认证则不会重复认证
+    利用session采用自动认证清华服务器的GET访问，若已经认证则不会重复认证。由于教参平台的证书过期，不得不关掉verify。
     :param url: 访问的url
     :param session: 会话
     :param username: 用户名
