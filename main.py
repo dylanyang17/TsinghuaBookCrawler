@@ -6,12 +6,14 @@ import os
 from urllib.parse import urljoin
 from auth_get import auth_get
 from download_imgs import download_imgs
+from img2pdf import img2pdf
 
 if __name__ == '__main__':
     username = ''
     password = ''
-    url = 'http://reserves.lib.tsinghua.edu.cn/book3//00004804/00004804000/FLASH/index.html'
+    url = 'http://reserves.lib.tsinghua.edu.cn/book3//00001561/00001561009/FLASH/index.html'
     processing_num = 8  # 进程数
+    del_img = True      # 下载完毕之后是否删除过程中保存的图片
 
     xml_suffix = urljoin('data/', 'setting.xml')
     img_suffix = '../HTML5/m/'
@@ -42,6 +44,19 @@ if __name__ == '__main__':
     else:
         print('图片格式:', img_suffix)
 
-    download_imgs(session, username, password, img_path, img_suffix, page_count, os.path.join('download', book_name),
+    save_dir = os.path.join('download', book_name)
+    download_imgs(session, username, password, img_path, img_suffix, page_count, save_dir,
                   processing_num=processing_num)
     print('图片下载完成, 开始转换..')
+    pdf_path = os.path.join(save_dir, book_name + '.pdf')
+    imgs = [os.path.join(save_dir, '%d.%s' % (i, img_suffix)) for i in range(1, page_count + 1)]
+    if os.path.exists(pdf_path):
+        print('已经生成完毕, 跳过转换')
+    else:
+        img2pdf(imgs, pdf_path)
+        print('生成pdf成功：' + book_name + '.pdf')
+    if del_img:
+        print('删除图片完成')
+        for img in imgs:
+            os.remove(img)
+

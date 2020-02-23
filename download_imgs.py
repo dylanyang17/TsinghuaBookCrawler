@@ -1,13 +1,9 @@
 import os
 import random
-import time
+import requests
 from multiprocessing.pool import Pool
 from urllib.parse import urljoin
 from auth_get import auth_get
-
-from auth_get import auth_get
-
-from sphinx.util import requests
 
 
 def randstr(num):

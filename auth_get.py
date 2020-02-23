@@ -26,6 +26,7 @@ def auth_get(url, session, username, password, timeout=None):
             if tmp == None:
                 print('认证失败, 请检查用户名和密码')
                 sys.exit()
+            print('认证成功')
             ticket_url = tmp.group(1)
             res = session.get(ticket_url, timeout=timeout)
     except UnicodeDecodeError:
