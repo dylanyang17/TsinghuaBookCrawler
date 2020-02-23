@@ -1,5 +1,6 @@
 import sys
-
+import argparse
+import getpass
 import requests
 import re
 import os
@@ -8,13 +9,29 @@ from auth_get import auth_get
 from download_imgs import download_imgs
 from img2pdf import img2pdf
 
-if __name__ == '__main__':
-    username = ''
-    password = ''
-    url = 'http://reserves.lib.tsinghua.edu.cn/book3//00001561/00001561009/FLASH/index.html'
-    processing_num = 8  # 进程数
-    del_img = True      # 下载完毕之后是否删除过程中保存的图片
 
+def get_input():
+    """
+    获得输入的各参数
+    :return: [username, password, url, processing_num, del_img]
+    """
+    parser = argparse.ArgumentParser(description='Download e-book from http://reserves.lib.tsinghua.edu.cn. For example, "python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".')
+    parser.add_argument('url')
+    parser.add_argument('-n', help='Optional. The number of processes.', default=4)
+    parser.add_argument('-p', '--preserve', help='Optional. Preserve the temporary images.', action='store_true')
+
+    args = parser.parse_args()
+    url = args.url
+    processing_num = args.n
+    del_img = not args.preserve
+    print('Student ID:', end='')
+    username = input()
+    password = getpass.getpass('Password:')
+    return [username, password, url, processing_num, del_img]
+
+
+if __name__ == '__main__':
+    username, password, url, processing_num, del_img = get_input()
     xml_suffix = urljoin('data/', 'setting.xml')
     img_suffix = '../HTML5/m/'
     candidate_img_suffix = ['jpg', 'png']
@@ -56,7 +73,7 @@ if __name__ == '__main__':
         img2pdf(imgs, pdf_path)
         print('生成pdf成功：' + book_name + '.pdf')
     if del_img:
-        print('删除图片完成')
+        print('清理临时图片完成')
         for img in imgs:
             os.remove(img)
 
