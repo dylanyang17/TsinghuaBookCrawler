@@ -24,6 +24,8 @@ username 为学号，password 为密码，url 为需要爬取的书籍（点击�
 
 设置完毕之后直接运行 main.py 即可，会自动下载到download目录下。
 
+请大家注意自己的账户安全，下载完毕之后将username和password这两项清空。
+
 ## 环境
 
 python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
@@ -36,6 +38,14 @@ python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
 * 支持多进程快速下载；
 * 支持"断点续传"，不会重复下载已经下载完成的部分；
 * 支持自动识别书名和页数（书名也可能得到一串数字）。
+
+## 示例
+
+![example1](https://github.com/lflame/TsinghuaBookCrawler/blob/master/example/1.png)
+
+![example2](https://github.com/lflame/TsinghuaBookCrawler/blob/master/example/2.png)
+
+![example3](https://github.com/lflame/TsinghuaBookCrawler/blob/master/example/3.png)
 
 ## 说明
 
