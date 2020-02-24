@@ -23,20 +23,20 @@ python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
 ```
 usage: main.py [-h] [-s S] [-n N] [-p] url
 
-Version: v1.2. Download e-book from http://reserves.lib.tsinghua.edu.cn. By default, the number of processes is four and the temporary images will not be preserved. For example, "python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".
+Version: v1.2.1. Download e-books from http://reserves.lib.tsinghua.edu.cn. By default, the number of processes is four and the temporary images will not be preserved. For example, "python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".
 
 positional arguments:
   url
 
 optional arguments:
   -h, --help      show this help message and exit
-  -s S            Optional(3 by default), [1~3]. The size of downloaded
-                  images. For example, "-s 3" means the biggest size.
-  -n N            Optional(4 by default), [1~16]. The number of processes.
+  -s S            Optional, [1~3] (Automatically choose the biggest size by
+                  default). The size of downloaded images.
+  -n N            Optional, [1~16] (4 by default). The number of processes.
   -p, --preserve  Optional. Preserve the temporary images.
 ```
 
-一般来说不加参数使用即可，默认进程数为4，且下载最高清的版本。例子如上帮助信息所述，在存放main.py的目录下用命令行执行：``python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html``，在提示输入用户名和密码(密码不会显示)以及章节数后，将自动下载到download子目录下。
+一般来说不加参数使用即可，默认进程数为4，且将会自动下载最高清的版本。例子如上帮助信息所述，在存放main.py的目录下用命令行执行：``python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html``，在提示输入用户名和密码(密码不会显示)以及章节数后，将自动下载到download子目录下。
 
 对于一般书籍来说，在提示输入章节数时直接回车跳过即可。
 
@@ -46,7 +46,15 @@ optional arguments:
 
 例如书籍：``http://reserves.lib.tsinghua.edu.cn/Search/BookDetail?bookId=3cf9814a-33ce-4489-b025-c58140c26263``，找到其第一个链接之后，执行 ``python http://reserves.lib.tsinghua.edu.cn/book3//00001044/00001044000/FLASH/index.html``，并在提示输入章节数时输入 5 即可。
 
+#### 有关清晰度
+
+``-s {1, 2, 3}`` 可以显式设定清晰度，一般来说, 1、2、3 对应的清晰度依次递增，然而存在一些特例。故在 v1.2.1 版本中加入了对清晰度的自动选择（而不是默认``-s 3``），在没有指定清晰度时，将自动找到最高清晰度进行下载。
+
 ## 特性
+
+### v1.2.1
+
+* 修复v1.2中默认清晰度的设置，当不显式使用 ``-s {1, 2, 3}`` 指定清晰度时，将自动地对三种清晰度进行确认，将选择最高清晰度。
 
 ### v1.2
 
@@ -77,6 +85,11 @@ optional arguments:
 ![example2](https://github.com/lflame/TsinghuaBookCrawler/blob/master/example/2.png)
 
 ![example3](https://github.com/lflame/TsinghuaBookCrawler/blob/master/example/3.png)
+
+## 鸣谢
+
+* 感谢awx同学对清晰度选择的建议，由此新增了清晰度选择的功能；
+* 感谢cyz同学对默认清晰度问题的反馈，由此新增了自动选择清晰度的功能。
 
 ## 说明
 

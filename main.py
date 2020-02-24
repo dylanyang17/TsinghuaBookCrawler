@@ -18,14 +18,13 @@ def get_input():
     分别表示username学号、password密码、url爬取的首个链接、processing_num进程数、del_img是否删除临时图片、
     size图片大小（清晰度选择）、links_cnt（链接数，也即章节数）
     """
-    parser = argparse.ArgumentParser(description='Version: v1.2. Download e-book from http://reserves.lib.tsinghua.edu.cn. '
+    parser = argparse.ArgumentParser(description='Version: v1.2.1. Download e-book from http://reserves.lib.tsinghua.edu.cn. '
                                                  'By default, the number of processes is four and the temporary images '
                                                  'will not be preserved. \nFor example, '
                                                  '"python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".')
     parser.add_argument('url')
-    parser.add_argument('-s', help='Optional(3 by default), [1~3]. The size of downloaded images. For example, "-s 3" '
-                                   'means the biggest size.', type=int, default=3)
-    parser.add_argument('-n', help='Optional(4 by default), [1~16]. The number of processes.', type=int, default=4)
+    parser.add_argument('-s', help='Optional, [1~3] (Automatically choose the biggest size by default). The size of downloaded images.', type=int)
+    parser.add_argument('-n', help='Optional, [1~16] (4 by default). The number of processes.', type=int, default=4)
     parser.add_argument('-p', '--preserve', help='Optional. Preserve the temporary images.', action='store_true')
 
     args = parser.parse_args()
@@ -33,7 +32,7 @@ def get_input():
     size = args.s
     processing_num = args.n
     del_img = not args.preserve
-    if size not in [1, 2, 3]:
+    if size not in [1, 2, 3] and size is not None:
         print('Please check your parameter: -s [1~3]')
         parser.print_usage()
         sys.exit()
@@ -50,15 +49,14 @@ def get_input():
     links_cnt = int(links_cnt)
     if links_cnt <= 0:
         print('There must be one chapter to download at least.')
-        exit()
-    size = 's' if size == 1 else ('m' if size == 2 else 'l')
+        sys.exit()
     return [username, password, url, processing_num, del_img, size, links_cnt]
 
 
 if __name__ == '__main__':
     username, password, url0, processing_num, del_img, size, links_cnt = get_input()
     xml_relpath = './HTML5/setting.xml'
-    img_relpath = './HTML5/%s/' % size
+    img_relpaths = ['./HTML5/s/', './HTML5/m/', './HTML5/l/']
     candidate_img_suffix = ['jpg', 'png']
     session = requests.session()
 
@@ -74,8 +72,9 @@ if __name__ == '__main__':
 
     # 获取图片格式, 存放到 img_fmt
     img_fmt = ''
+    print('自动获取图片格式中...')
     for fmt in candidate_img_suffix:
-        img_url = urljoin(urls[0], img_relpath + '1.' + fmt)
+        img_url = urljoin(urls[0], img_relpaths[1] + '1.' + fmt)
         print(img_url)
         img_res = auth_get(img_url, session, username, password)
         if img_res.status_code == 200:
@@ -86,6 +85,29 @@ if __name__ == '__main__':
         sys.exit()
     else:
         print('图片格式:', img_fmt)
+
+    # 若 size 为 None, 则获取图片最高清晰度's'/'m'/'l', 存放到 size 中
+    img_relpath = img_relpaths[1]
+    if size is None:
+        print('自动获取最高清晰度中...')
+        mx = 0
+        for i, relpath in enumerate(img_relpaths):
+            img_url = urljoin(urls[0], relpath + '1.' + img_fmt)
+            img_res = auth_get(img_url, session, username, password)
+            if img_res.status_code == 200:
+                clen = int(img_res.headers.get('Content-Length', default=-1))
+                print('-s %d: %d' % (i+1, clen))
+                if clen > mx:
+                    mx = clen
+                    img_relpath = img_relpaths[i]
+                    size = i+1
+        if size is None:
+            print('自动获取清晰度失败, 默认使用 -s 2')
+            img_relpath = img_relpaths[1]
+        else:
+            print('自动获取清晰度成功：-s %d' % (size))
+    else:
+        img_relpath = img_relpaths[size-1]
 
     # 获得需要下载的所有图片url, 并存放在 img_urls 中
     book_name = ''
