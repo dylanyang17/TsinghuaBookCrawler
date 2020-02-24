@@ -14,30 +14,42 @@ from img2pdf import img2pdf
 def get_input():
     """
     获得输入的各参数
-    :return: [username, password, url, processing_num, del_img]
+    :return: [username, password, url, processing_num, del_img, size]
     """
     parser = argparse.ArgumentParser(description='Download e-book from http://reserves.lib.tsinghua.edu.cn. '
                                                  'By default, the number of processes is four and the temporary images '
                                                  'will not be preserved. \nFor example, '
                                                  '"python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".')
     parser.add_argument('url')
-    parser.add_argument('-n', help='Optional. The number of processes.', default=4)
+    parser.add_argument('-s', help='Optional(3 by default), [1~3]. The size of downloaded images. For example, "-s 3" '
+                                   'means the biggest size.', type=int, default=3)
+    parser.add_argument('-n', help='Optional(4 by default), [1~16]. The number of processes.', type=int, default=4)
     parser.add_argument('-p', '--preserve', help='Optional. Preserve the temporary images.', action='store_true')
 
     args = parser.parse_args()
     url = args.url
+    size = args.s
     processing_num = args.n
     del_img = not args.preserve
+    if size not in [1, 2, 3]:
+        print('Please check your parameter: -s [1~3]')
+        parser.print_usage()
+        sys.exit()
+    if processing_num not in list(range(1, 17)):
+        print('Please check your parameter: -n [1~16]')
+        parser.print_usage()
+        sys.exit()
     print('Student ID:', end='')
     username = input()
     password = getpass.getpass('Password:')
-    return [username, password, url, processing_num, del_img]
+    size = 's' if size == 1 else ('m' if size == 2 else 'l')
+    return [username, password, url, processing_num, del_img, size]
 
 
 if __name__ == '__main__':
-    username, password, url, processing_num, del_img = get_input()
+    username, password, url, processing_num, del_img, size = get_input()
     xml_suffix = urljoin('data/', 'setting.xml')
-    img_suffix = '../HTML5/m/'
+    img_suffix = '../HTML5/%s/' % size
     candidate_img_suffix = ['jpg', 'png']
     session = requests.session()
     xml_url = urljoin(url, xml_suffix)
