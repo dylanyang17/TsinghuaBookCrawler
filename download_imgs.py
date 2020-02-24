@@ -50,32 +50,31 @@ def download_one(session, username, password, url, save_dir, filename):
     print('下载图片成功：' + filename)
 
 
-def download_imgs(session, username, password, img_path, img_suffix, page_count, save_dir, processing_num=4):
+def download_imgs(session, username, password, img_urls, page_count, save_dir, processing_num):
     """
     下载一本书的所有图片
     :param session: Session类型
     :param username: 用户名
     :param password: 密码
-    :param img_path: 除了如"*.jpg"以外的url路径
-    :param img_suffix: 图片后缀
+    :param img_urls: 要下载的所有图片路径
     :param page_count: 页数
     :param save_dir: 保存的目录
-    :param processing_num: 进程数，默认为 4
+    :param processing_num: 进程数
     :return:
     """
     os.makedirs(save_dir, exist_ok=True)
     fail = True
+    img_fmt = img_urls[0][img_urls[0].rfind('.')+1:]
     while fail:
         p = Pool(processing_num)
         fail = False
-        for i in range(1, page_count+1):
-            filename = '%d.%s' % (i, img_suffix)
-            url = urljoin(img_path, filename)
+        for i, img_url in enumerate(img_urls):
+            filename = '%d.%s' % (i+1, img_fmt)
             path = os.path.join(save_dir, filename)
             if os.path.exists(path):
                 print('已下载：%s, 跳过' % filename)
                 continue
             fail = True
-            p.apply_async(download_one, args=(session, username, password, url, save_dir, filename))
+            p.apply_async(download_one, args=(session, username, password, img_url, save_dir, filename))
         p.close()
         p.join()

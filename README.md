@@ -16,31 +16,43 @@ python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
 
 ### 使用
 
-用于下载清华教参平台上的电子书pdf版本，清华教参平台：http://reserves.lib.tsinghua.edu.cn 。找到自己需要的书籍之后，进入阅读界面，将网址复制过来即可。此处也可用https，但教参平台的证书过期，会导致打印很多Warning。
+用于下载清华教参平台上的电子书pdf版本，清华教参平台：http://reserves.lib.tsinghua.edu.cn 。找到自己需要的书籍之后，进入阅读界面将网址复制过来即可。此处也可用https，但教参平台的证书过期，会导致打印很多Warning。
 
 使用 ``python main.py -h`` 可以打印帮助信息：
 
 ```
-usage: main.py [-h] [-n N] [-p] url
+usage: main.py [-h] [-s S] [-n N] [-p] url
 
-Download e-book from http://reserves.lib.tsinghua.edu.cn. By default, the number of processes is four and the temporary images will not be preserved.
-
-For example, "python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".
+Version: v1.2. Download e-book from http://reserves.lib.tsinghua.edu.cn. By default, the number of processes is four and the temporary images will not be preserved. For example, "python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".
 
 positional arguments:
   url
 
 optional arguments:
   -h, --help      show this help message and exit
-  -n N            Optional. The number of processes.
+  -s S            Optional(3 by default), [1~3]. The size of downloaded
+                  images. For example, "-s 3" means the biggest size.
+  -n N            Optional(4 by default), [1~16]. The number of processes.
   -p, --preserve  Optional. Preserve the temporary images.
 ```
 
-一般来说不加参数使用即可，默认进程数为4，例子如上帮助信息所述，在存放main.py的目录下用命令行执行：``python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html``，会自动下载到download子目录下。
+一般来说不加参数使用即可，默认进程数为4，且下载最高清的版本。例子如上帮助信息所述，在存放main.py的目录下用命令行执行：``python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html``，在提示输入用户名和密码(密码不会显示)以及章节数后，将自动下载到download子目录下。
 
-对于整本书分章给出多个链接的少部分书目，此脚本暂时没有加上一键下载合并的功能，故只能每次下载一章。到之后如果有需求我会尽快加上的。
+对于一般书籍来说，在提示输入章节数时直接回车跳过即可。
+
+#### 多链接书籍下载——章节数参数
+
+章节数为 v1.2 中加入特性，实际上指链接数。主要是为了方便下载给出了多个链接的少部分书目。此时只需要将第一个链接作为 url 传入，并且提示输入章节数时输入实际链接数即可。
+
+例如书籍：``http://reserves.lib.tsinghua.edu.cn/Search/BookDetail?bookId=3cf9814a-33ce-4489-b025-c58140c26263``，找到其第一个链接之后，执行 ``python http://reserves.lib.tsinghua.edu.cn/book3//00001044/00001044000/FLASH/index.html``，并在提示输入章节数时输入 5 即可。
 
 ## 特性
+
+### v1.2
+
+* 加入``-s {1, 2, 3}``清晰度选择，且**提高默认清晰度**；
+* 加入链接正则化统一处理，既可打开阅读页面再复制链接，也可以在进入阅读页面前用右键复制链接；
+* 加入多章节书籍的下载，使用方便。
 
 ### v1.1
 
