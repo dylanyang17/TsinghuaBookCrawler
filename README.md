@@ -46,7 +46,7 @@ optional arguments:
 
 例如书籍：``http://reserves.lib.tsinghua.edu.cn/Search/BookDetail?bookId=3cf9814a-33ce-4489-b025-c58140c26263``，找到其第一个链接之后，执行 ``python http://reserves.lib.tsinghua.edu.cn/book3//00001044/00001044000/FLASH/index.html``，并在提示输入章节数时输入 5 即可。
 
-#### 有关清晰度
+#### 关于清晰度
 
 ``-s {1, 2, 3}`` 可以显式设定清晰度，一般来说, 1、2、3 对应的清晰度依次递增，然而存在一些特例。故在 v1.2.1 版本中加入了对清晰度的自动选择（而不是默认``-s 3``），在没有指定清晰度时，将自动找到最高清晰度进行下载。
 
