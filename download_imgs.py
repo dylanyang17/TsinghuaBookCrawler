@@ -1,6 +1,8 @@
 # coding:utf-8
 import os
+import sys
 import random
+
 import requests
 from multiprocessing.pool import Pool
 from urllib.parse import urljoin
@@ -32,22 +34,28 @@ def download_one(session, username, password, url, save_dir, filename):
     :param filename: 文件名
     :return:
     """
-    save_path = os.path.join(save_dir, filename)
     try:
-        res = auth_get(url, session, username, password, timeout=15)
-    except requests.exceptions.Timeout:
-        print('请求超时:', filename)
-        return
-    print('开始下载：' + filename)
-    while True:
-        tmp_name = get_tmpname()
-        tmp_path = os.path.join(save_dir, tmp_name)
-        if not os.path.exists(tmp_path):
-            break
-    with open(tmp_path, 'wb') as f:
-        f.write(res.content)
-    os.rename(tmp_path, save_path)
-    print('下载图片成功：' + filename)
+        save_path = os.path.join(save_dir, filename)
+        try:
+            res = auth_get(url, session, username, password, timeout=15)
+        except requests.exceptions.Timeout:
+            print('请求超时:', filename)
+            return
+        print('开始下载：' + filename)
+        while True:
+            tmp_name = get_tmpname()
+            tmp_path = os.path.join(save_dir, tmp_name)
+            if not os.path.exists(tmp_path):
+                break
+        with open(tmp_path, 'wb') as f:
+            f.write(res.content)
+        os.rename(tmp_path, save_path)
+        print('下载图片成功：' + filename)
+    except KeyboardInterrupt:
+        pid = os.getpid()
+        print('子进程 %d 被终止...' % pid)
+    except Exception as e:
+        print(e)
 
 
 def download_imgs(session, username, password, img_urls, page_count, save_dir, processing_num):
@@ -65,16 +73,21 @@ def download_imgs(session, username, password, img_urls, page_count, save_dir, p
     os.makedirs(save_dir, exist_ok=True)
     fail = True
     img_fmt = img_urls[0][img_urls[0].rfind('.')+1:]
-    while fail:
-        p = Pool(processing_num)
-        fail = False
-        for i, img_url in enumerate(img_urls):
-            filename = '%d.%s' % (i+1, img_fmt)
-            path = os.path.join(save_dir, filename)
-            if os.path.exists(path):
-                print('已下载：%s, 跳过' % filename)
-                continue
-            fail = True
-            p.apply_async(download_one, args=(session, username, password, img_url, save_dir, filename))
-        p.close()
-        p.join()
+    try:
+        while fail:
+            p = Pool(processing_num)
+            fail = False
+            for i, img_url in enumerate(img_urls):
+                filename = '%d.%s' % (i+1, img_fmt)
+                path = os.path.join(save_dir, filename)
+                if os.path.exists(path):
+                    print('已下载：%s, 跳过' % filename)
+                    continue
+                fail = True
+                p.apply_async(download_one, args=(session, username, password, img_url, save_dir, filename))
+            p.close()
+            p.join()
+    except KeyboardInterrupt:
+        print('父进程被终止')
+        pid = os.getpid()
+        os.popen('taskkill.exe /f /pid:%d' % pid)

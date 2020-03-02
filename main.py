@@ -9,6 +9,7 @@ from urllib.parse import urljoin
 from auth_get import auth_get
 from download_imgs import download_imgs
 from img2pdf import img2pdf
+from utils import get_best_size, get_fmt
 
 
 def get_input():
@@ -57,7 +58,7 @@ if __name__ == '__main__':
     username, password, url0, processing_num, del_img, size, links_cnt = get_input()
     xml_relpath = './HTML5/setting.xml'
     img_relpaths = ['./HTML5/s/', './HTML5/m/', './HTML5/l/']
-    candidate_img_suffix = ['jpg', 'png']
+    candi_fmts = ['jpg', 'png']
     session = requests.session()
 
     # 获取每一章的链接前缀, 存放到 urls 中
@@ -70,50 +71,11 @@ if __name__ == '__main__':
         url = url0[:st] + ''.join(['0' for _ in range(zero_len)]) + str(chap0 + i) + '/'
         urls.append(url)
 
-    # 获取图片格式, 存放到 img_fmt
-    img_fmt = ''
-    print('自动获取图片格式中...')
-    for fmt in candidate_img_suffix:
-        img_url = urljoin(urls[0], img_relpaths[1] + '1.' + fmt)
-        print(img_url)
-        img_res = auth_get(img_url, session, username, password)
-        if img_res.status_code == 200:
-            img_fmt = fmt
-            break
-    if img_fmt == '':
-        print('获取图片格式失败')
-        sys.exit()
-    else:
-        print('图片格式:', img_fmt)
-
-    # 若 size 为 None, 则获取图片最高清晰度's'/'m'/'l', 存放到 size 中
-    img_relpath = img_relpaths[1]
-    if size is None:
-        print('自动获取最高清晰度中...')
-        mx = 0
-        for i, relpath in enumerate(img_relpaths):
-            img_url = urljoin(urls[0], relpath + '1.' + img_fmt)
-            img_res = auth_get(img_url, session, username, password)
-            if img_res.status_code == 200:
-                clen = int(img_res.headers.get('Content-Length', default=-1))
-                print('-s %d: %d' % (i+1, clen))
-                if clen > mx:
-                    mx = clen
-                    img_relpath = img_relpaths[i]
-                    size = i+1
-        if size is None:
-            print('自动获取清晰度失败, 默认使用 -s 2')
-            img_relpath = img_relpaths[1]
-        else:
-            print('自动获取清晰度成功：-s %d' % (size))
-    else:
-        img_relpath = img_relpaths[size-1]
-
     # 获得需要下载的所有图片url, 并存放在 img_urls 中
     book_name = ''
     page_cnt = 0
     img_urls = []
-    for url in urls:
+    for ind, url in enumerate(urls):
         xml_url = urljoin(url, xml_relpath)
         xml_res = auth_get(xml_url, session, username, password)
         s = str(xml_res.content, xml_res.apparent_encoding)
@@ -122,6 +84,10 @@ if __name__ == '__main__':
             book_name = re.search('<ad_title>(.*)</ad_title>', s).group(1)
             if book_name.find('CDATA') != -1:
                 book_name = re.search('CDATA\\[(.*?)\\]', book_name).group(1).strip()
+        print('Chapter: %d' % (ind + 1))
+        img_fmt = get_fmt(url, img_relpaths[1], candi_fmts, session, username, password)  # 获取图片格式
+        img_relpath = get_best_size(url, img_relpaths, img_fmt, size, session, username, password)  # 获取对应清晰度的相对路径
+        print('')
         for i in range(1, page_now + 1):
             img_url = urljoin(url, img_relpath + '%d.%s' % (i, img_fmt))
             img_urls.append(img_url)
