@@ -23,7 +23,7 @@ python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
 ```
 usage: main.py [-h] [-s S] [-n N] [-p] url
 
-Version: v1.2.1. Download e-books from http://reserves.lib.tsinghua.edu.cn. By default, the number of processes is four and the temporary images will not be preserved. For example, "python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".
+Version: v1.2.2. Download e-books from http://reserves.lib.tsinghua.edu.cn. By default, the number of processes is four and the temporary images will not be preserved. For example, "python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".
 
 positional arguments:
   url
@@ -53,6 +53,11 @@ optional arguments:
 ``-s {1, 2, 3}`` 可以显式设定清晰度，一般来说, 1、2、3 对应的清晰度依次递增，然而存在一些特例。故在 v1.2.1 版本中加入了对清晰度的自动选择（而不是默认``-s 3``），在没有指定清晰度时，将自动找到最高清晰度进行下载。
 
 ## 特性
+
+### v1.2.2
+
+* 对于多章节最高清晰度不同的少数情况进行了处理，将对每个章节链接都进行一遍最高清晰度和图片格式的确定；
+* 改进异常处理，修复网络状况不稳定时子进程阻塞的bug。
 
 ### v1.2.1
 
@@ -91,7 +96,8 @@ optional arguments:
 ## 鸣谢
 
 * 感谢awx同学对清晰度选择的建议，由此新增了v1.2中清晰度选择的功能；
-* 感谢cyz同学对默认清晰度问题的反馈，由此新增了v1.2.1中自动选择清晰度的功能。
+* 感谢cyz同学对默认清晰度问题的反馈，由此新增了v1.2.1中自动选择清晰度的功能；
+* 感谢sck同学对不同章节最高清晰度设定可能不同这一问题的反馈，由此在v1.2.2中改进了自动选择清晰度的功能。
 
 ## 说明
 

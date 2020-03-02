@@ -19,7 +19,7 @@ def get_input():
     分别表示username学号、password密码、url爬取的首个链接、processing_num进程数、del_img是否删除临时图片、
     size图片大小（清晰度选择）、links_cnt（链接数，也即章节数）
     """
-    parser = argparse.ArgumentParser(description='Version: v1.2.1. Download e-book from http://reserves.lib.tsinghua.edu.cn. '
+    parser = argparse.ArgumentParser(description='Version: v1.2.2. Download e-book from http://reserves.lib.tsinghua.edu.cn. '
                                                  'By default, the number of processes is four and the temporary images '
                                                  'will not be preserved. \nFor example, '
                                                  '"python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".')
