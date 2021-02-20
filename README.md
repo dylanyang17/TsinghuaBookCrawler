@@ -21,26 +21,29 @@ python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
 使用 ``python main.py -h`` 可以打印帮助信息：
 
 ```
-usage: main.py [-h] [-s S] [-n N] [-p] url
+usage: main.py [-h] [-n N] [-p] url
 
-Version: v1.2.2. Download e-books from http://reserves.lib.tsinghua.edu.cn. By default, the number of processes is four and the temporary images will not be preserved. For example, "python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html".
+Version: v2.0. Download e-book from http://reserves.lib.tsinghua.edu.cn. By
+default, the number of processes is four and the temporary images will not be
+preserved. For example, "python main.py http://reserves.lib.tsinghua.edu.cn/bo
+ok5//00004634/00004634000/mobile/index.html".
 
 positional arguments:
   url
 
 optional arguments:
   -h, --help      show this help message and exit
-  -s S            Optional, [1~3] (Automatically choose the biggest size by
-                  default). The size of downloaded images.
   -n N            Optional, [1~16] (4 by default). The number of processes.
   -p, --preserve  Optional. Preserve the temporary images.
 ```
 
-一般来说不加参数使用即可，默认进程数为4，且将会自动下载最高清的版本。例子如上帮助信息所述，在存放main.py的目录下用命令行执行：``python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html``，在提示输入用户名和密码(密码不会显示)以及章节数后，将自动下载到download子目录下。
+一般来说不加参数使用即可，默认进程数为4。例子如上帮助信息所述，在存放main.py的目录下用命令行执行：``python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html``，在提示输入用户名和密码(密码不会显示)以及章节数后，将自动下载到download子目录下。
 
 对于一般书籍来说，在提示输入章节数时直接回车跳过即可。
 
 ### 高级
+
+未特别指明的功能则在 v2.0 中仍然保留。
 
 #### 多链接书籍下载——章节数参数
 
@@ -50,9 +53,18 @@ optional arguments:
 
 #### 关于清晰度
 
-``-s {1, 2, 3}`` 可以显式设定清晰度，一般来说, 1、2、3 对应的清晰度依次递增，然而存在一些特例。故在 v1.2.1 版本中加入了对清晰度的自动选择（而不是默认``-s 3``），在没有指定清晰度时，将自动找到最高清晰度进行下载。
+v2.0 版本：由于使用新接口，只有唯一版本图片，目前测试看来应该是最高清的，如果出现异常或是发现更高清版本的接口，烦请联系作者，感谢。
+
+低于 v2.0 版本的描述：``-s {1, 2, 3}`` 可以显式设定清晰度，一般来说, 1、2、3 对应的清晰度依次递增，然而存在一些特例。故在 v1.2.1 版本中加入了对清晰度的自动选择（而不是默认``-s 3``），在没有指定清晰度时，将自动找到最高清晰度进行下载。
 
 ## 特性
+
+### v2.0 —— 2021/2/21
+
+由于教参平台接口更新，于是该脚本也迎来了 v2.0 版本，目前测试中发现影响不大，受到影响的特性有：
+
+* 书名提取可能失效，此时按照旧版本习惯会使用数字串进行代替；
+* 由于新接口似乎只提供了唯一清晰度，于是清晰度选择被取消。
 
 ### v1.2.2
 
