@@ -9,6 +9,7 @@ from urllib.parse import urljoin
 from auth_get import auth_get
 from download_imgs import download_imgs
 from img2pdf import img2pdf
+from utils import get_fmt
 
 def get_input():
     """
@@ -47,13 +48,15 @@ def get_input():
 
 if __name__ == '__main__':
     username, password, url0, processing_num, del_img, links_cnt = get_input()
-    js_relpath = 'javascript/config.js'
+    js_relpath = 'mobile/javascript/config.js'
     img_relpath = 'files/mobile/'
     candi_fmts = ['jpg', 'png']
     session = requests.session()
 
     # 获取每一章的链接前缀, 存放到 urls 中
     urls = []
+    if re.search('mobile/index.html', url0) is None:
+        url0 = url0.replace('/index.html', '/mobile/index.html')
     st, ed = re.search('(/([^/]*)/)(mobile)', url0).span(2)
     chap_len = ed - st
     chap0 = int(url0[st:ed])
@@ -61,14 +64,16 @@ if __name__ == '__main__':
     for i in range(links_cnt):
         url = url0[:st] + ''.join(['0' for _ in range(zero_len)]) + str(chap0 + i) + '/'
         urls.append(url)
+        print('lala:', url)
 
     # 获得需要下载的所有图片url, 并存放在 img_urls 中
     book_name = ''
     page_cnt = 0
     img_urls = []
     for ind, url in enumerate(urls):
-        js_url = urljoin(url0, js_relpath)
+        js_url = urljoin(url, js_relpath)
         js_res = auth_get(js_url, session, username, password)
+        print(js_url)
         s = str(js_res.content, js_res.apparent_encoding)
         page_now = int(re.search('totalPageCount=(\d+)', s).group(1))
         if book_name == '':
