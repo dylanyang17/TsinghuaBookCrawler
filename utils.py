@@ -32,6 +32,7 @@ def get_fmt(url, img_relpath, candi_fmts, session, username, password):
 
 def get_best_size(url, img_relpaths, img_fmt, size, session, username, password):
     """
+    DEPRECATED.
     获得清晰度最高时对应的相对路径
     :param url: 前缀url
     :param img_relpaths: 对应的三个相对路径的列表

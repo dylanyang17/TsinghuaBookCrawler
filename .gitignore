@@ -1,3 +1,5 @@
 download/
 *~
 *.swp
+.idea/
+__pycache__/
