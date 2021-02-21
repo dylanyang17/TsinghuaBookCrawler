@@ -75,9 +75,9 @@ if __name__ == '__main__':
         js_res = auth_get(js_url, session, username, password)
         print(js_url)
         s = str(js_res.content, js_res.apparent_encoding)
-        page_now = int(re.search('totalPageCount=(\d+)', s).group(1))
+        page_now = int(re.search(r'totalPageCount=(\d+)', s).group(1))
         if book_name == '':
-            book_name = re.search('bookConfig.bookTitle="(\d+)"', s).group(1)
+            book_name = re.search(r'bookConfig.bookTitle="(\d+)"', s).group(1)
         print(book_name, page_now)
         print('Chapter: %d' % (ind + 1))
         img_fmt = get_fmt(url, img_relpath, candi_fmts, session, username, password)  # 获取图片格式
