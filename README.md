@@ -37,7 +37,7 @@ optional arguments:
   -p, --preserve  Optional. Preserve the temporary images.
 ```
 
-一般来说不加参数使用即可，默认进程数为4。例子如上帮助信息所述，在存放main.py的目录下用命令行执行：``python main.py http://reserves.lib.tsinghua.edu.cn/book3//00003597/00003597000/FLASH/index.html``，在提示输入用户名和密码(密码不会显示)以及章节数后，将自动下载到download子目录下。
+一般来说不加参数使用即可，默认进程数为4。例子如上帮助信息所述，在存放main.py的目录下用命令行执行：``"python main.py http://reserves.lib.tsinghua.edu.cn/book5//00004634/00004634000/mobile/index.html``，在提示输入用户名和密码(密码不会显示)以及章节数后，将自动下载到download子目录下。
 
 对于一般书籍来说，在提示输入章节数时直接回车跳过即可。
 
@@ -49,7 +49,7 @@ optional arguments:
 
 章节数为 v1.2 中加入特性，实际上指链接数。主要是为了方便下载给出了多个链接的少部分书目。此时只需要将第一个链接作为 url 传入，并且提示输入章节数时输入实际链接数即可。
 
-例如书籍：``http://reserves.lib.tsinghua.edu.cn/Search/BookDetail?bookId=3cf9814a-33ce-4489-b025-c58140c26263``，找到其第一个链接之后，执行 ``python http://reserves.lib.tsinghua.edu.cn/book3//00001044/00001044000/FLASH/index.html``，并在提示输入章节数时输入 5 即可。
+例如书籍：``http://reserves.lib.tsinghua.edu.cn/Search/BookDetail?bookId=3cf9814a-33ce-4489-b025-c58140c26263``，找到其第一个链接之后，执行 ``"python main.py http://reserves.lib.tsinghua.edu.cn/book5//00004634/00004634000/mobile/index.html``，并在提示输入章节数时输入 5 即可。
 
 #### 关于清晰度
 
