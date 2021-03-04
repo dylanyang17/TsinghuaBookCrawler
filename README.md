@@ -12,7 +12,9 @@
 
 ### 环境
 
-python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
+python 版本为 python3，需要安装 pymupdf、requests、PIL：``pip install pymupdf requests pillow``。
+
+也可以使用 requirements.txt 进行一键安装：``pip install -r requirements.txt``。
 
 ### 使用
 
@@ -21,9 +23,9 @@ python 版本为 python3，需要安装 pymupdf：``pip install pymupdf``。
 使用 ``python main.py -h`` 可以打印帮助信息：
 
 ```
-usage: main.py [-h] [-n N] [-p] url
+usage: main.py [-h] [-n N] [-q Q] [-p] url
 
-Version: v2.0. Download e-book from http://reserves.lib.tsinghua.edu.cn. By
+Version: v2.1. Download e-book from http://reserves.lib.tsinghua.edu.cn. By
 default, the number of processes is four and the temporary images will not be
 preserved. For example, "python main.py http://reserves.lib.tsinghua.edu.cn/bo
 ok5//00004634/00004634000/mobile/index.html".
@@ -34,12 +36,15 @@ positional arguments:
 optional arguments:
   -h, --help      show this help message and exit
   -n N            Optional, [1~16] (4 by default). The number of processes.
+  -q Q            Optional, [3~10] (10 by default). The quality of the
+                  generated PDF. The bigger the value, the higher the
+                  resolution.
   -p, --preserve  Optional. Preserve the temporary images.
 ```
 
 一般来说不加参数使用即可，默认进程数为4。例子如上帮助信息所述，在存放main.py的目录下用命令行执行：``"python main.py http://reserves.lib.tsinghua.edu.cn/book5//00004634/00004634000/mobile/index.html``，在提示输入用户名和密码(密码不会显示)以及章节数后，将自动下载到download子目录下。
 
-对于一般书籍来说，在提示输入章节数时直接回车跳过即可。
+对于一般的单章节书籍来说，在提示输入章节数时直接回车跳过即可。
 
 ### 高级
 
@@ -49,15 +54,20 @@ optional arguments:
 
 章节数为 v1.2 中加入特性，实际上指链接数。主要是为了方便下载给出了多个链接的少部分书目。此时只需要将第一个链接作为 url 传入，并且提示输入章节数时输入实际链接数即可。
 
-例如书籍：``http://reserves.lib.tsinghua.edu.cn/Search/BookDetail?bookId=3cf9814a-33ce-4489-b025-c58140c26263``，找到其第一个链接之后，执行 ``"python main.py http://reserves.lib.tsinghua.edu.cn/book5//00004634/00004634000/mobile/index.html``，并在提示输入章节数时输入 5 即可。
+例如书籍：``http://reserves.lib.tsinghua.edu.cn/Search/BookDetail?bookId=3cf9814a-33ce-4489-b025-c58140c26263``，找到其第一个链接之后，执行 ``"python main.py http://reserves.lib.tsinghua.edu.cn/book5//00001044/00001044000/index.html``，并在提示输入章节数时输入 5 即可。
 
 #### 关于清晰度
 
-v2.0 版本：由于使用新接口，只有唯一版本图片，目前测试看来应该是最高清的，如果出现异常或是发现更高清版本的接口，烦请联系作者，感谢。
+v2.0 版本以上：由于使用新接口，只有唯一版本图片，目前测试看来应该是最高清的，如果出现异常或是发现更高清版本的接口，烦请联系作者，感谢。另外在 v2.1 版本以后对几乎同等质量下的 PDF 大小进行了大幅优化，并且支持调低清晰度以进一步降低生成的 PDF 大小，具体使用方法为 ``-q [3~10]``，数值越高则质量越好，默认为 10。如果可能会多次生成 PDF 以选择合适质量，请加上 ``-p`` 参数以避免多次下载图片文件。
 
 低于 v2.0 版本的描述：``-s {1, 2, 3}`` 可以显式设定清晰度，一般来说, 1、2、3 对应的清晰度依次递增，然而存在一些特例。故在 v1.2.1 版本中加入了对清晰度的自动选择（而不是默认``-s 3``），在没有指定清晰度时，将自动找到最高清晰度进行下载。
 
 ## 特性
+
+### v2.1 —— 2021/3/4
+
+* 大幅优化了几乎同等质量下生成的 PDF 文件大小；
+* 支持质量选项 ``-q [3~10]``，默认为 10 （最高质量），调小该值可以在降低清晰度的前提下降低 PDF 文件大小，若需多次测试合适清晰度建议开启 ``-p`` 选项以避免多次下载图片文件。
 
 ### v2.0 —— 2021/2/21
 
