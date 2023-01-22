@@ -28,8 +28,8 @@ def img2pdf(imgs, pdf_path, quality):
 
             # 插入到 PDF 中
             imgdoc = fitz.open(tmp_img)
-            pdfbytes = imgdoc.convertToPDF()
+            pdfbytes = imgdoc.convert_to_pdf()
             imgpdf = fitz.open("pdf", pdfbytes)
-            doc.insertPDF(imgpdf)
+            doc.insert_pdf(imgpdf)
         doc.save(pdf_path)
     shutil.rmtree(intermediate_dir)
