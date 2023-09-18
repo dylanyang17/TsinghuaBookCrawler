@@ -64,23 +64,29 @@ if __name__ == '__main__':
     urls = []
     if re.search('mobile/index.html', url0) is None:
         url0 = url0.replace('/index.html', '/mobile/index.html')
-    st, ed = re.search('(/([^/]*)/)(mobile)', url0).span(2)
+    st, ed = re.search('(/([^/]*)/)(mobile)', url0).span(2) # 获取"/mobile/"前一个分隔的首尾位置，如当url0="/products/mobile/smartphone"时返回(1,9)
     chap_len = ed - st
     chap0 = int(url0[st:ed])
     zero_len = chap_len - len(str(chap0))
-    for i in range(links_cnt):
-        url = url0[:st] + ''.join(['0' for _ in range(zero_len)]) + str(chap0 + i) + '/'
-        urls.append(url)
+    # for i in range(links_cnt):
+    #     url = url0[:st] + ''.join(['0' for _ in range(zero_len)]) + str(chap0 + i) + '/' # 对于所获取的章节分段，序号递增（但是有些章节会有序号跳跃，如某本书的下册，目录序号结尾是0，章节结尾是章节数）
+    #     urls.append(url)
 
     # 获得需要下载的所有图片url, 并存放在 img_urls 中
     book_name = ''
     page_cnt = 0
     img_urls = []
-    for ind, url in enumerate(urls):
-        js_url = urljoin(url, js_relpath)
-        js_res = auth_get(js_url, session, username, password)
+    displacement = 0
+    for ind in range(links_cnt):
+        while True:
+            url = url0[:st] + ''.join(['0' for _ in range(zero_len)]) + str(chap0 + ind + displacement) + '/'
+            js_url = urljoin(url, js_relpath)
+            js_res = auth_get(js_url, session, username, password)
+            s = str(js_res.content, js_res.apparent_encoding)
+            if re.search(r'totalPageCount=(\d+)', s) is not None:
+                break
+            displacement += 1
         print(js_url)
-        s = str(js_res.content, js_res.apparent_encoding)
         page_now = int(re.search(r'totalPageCount=(\d+)', s).group(1))
         if book_name == '':
             book_name = re.search(r'bookConfig.bookTitle="(\d+)"', s).group(1)
