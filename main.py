@@ -68,9 +68,6 @@ if __name__ == '__main__':
     chap_len = ed - st
     chap0 = int(url0[st:ed])
     zero_len = chap_len - len(str(chap0))
-    # for i in range(links_cnt):
-    #     url = url0[:st] + ''.join(['0' for _ in range(zero_len)]) + str(chap0 + i) + '/' # 对于所获取的章节分段，序号递增（但是有些章节会有序号跳跃，如某本书的下册，目录序号结尾是0，章节结尾是章节数）
-    #     urls.append(url)
 
     # 获得需要下载的所有图片url, 并存放在 img_urls 中
     book_name = ''

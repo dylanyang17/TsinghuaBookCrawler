@@ -2,6 +2,7 @@
 import os
 import fitz
 import shutil
+import random
 from PIL import Image
 
 
@@ -16,6 +17,21 @@ def img2pdf(imgs, pdf_path, quality):
     intermediate_dir = os.path.join(os.path.dirname(pdf_path), 'intermediate')
     if not os.path.exists(intermediate_dir):
         os.mkdir(intermediate_dir)
+
+    # 随机取样，找出多数图像的尺寸
+    page_count = len(imgs)
+    sample_size = {}
+    for i in range(100):
+        ran_index = random.randint(0, page_count-1)
+        w, h = Image.open(imgs[ran_index]).size
+        key = (w, h)
+        if key in sample_size:
+            sample_size[key] += 1
+        else:
+            sample_size[key] = 1
+    # print(sample_size)
+    final_size = max(sample_size, key=sample_size.get)
+
     with fitz.open() as doc:
         page_count = len(imgs)
         for i, img in enumerate(imgs):
@@ -23,8 +39,7 @@ def img2pdf(imgs, pdf_path, quality):
             # 生成相应质量的临时文件
             tmp_img = os.path.join(intermediate_dir, os.path.basename(img))
             img_obj = Image.open(img)
-            w, h = img_obj.size
-            img_obj.resize((int(w / 10 * quality), int(h / 10 * quality))).save(tmp_img, "JPEG")
+            img_obj.resize((int(final_size[0] / 10 * quality), int(final_size[1] / 10 * quality))).save(tmp_img, "JPEG")
 
             # 插入到 PDF 中
             imgdoc = fitz.open(tmp_img)
