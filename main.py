@@ -86,7 +86,13 @@ if __name__ == '__main__':
         print(js_url)
         page_now = int(re.search(r'totalPageCount=(\d+)', s).group(1))
         if book_name == '':
-            book_name = re.search(r'bookConfig.bookTitle="(\d+)"', s).group(1)
+            book_names =  re.search(r'bookConfig.bookTitle="(\d+)"', s);
+            if(book_names is None):
+                book_name = input("Book name Not Found! Please input the book name:")
+                if(book_name is None):
+                    book_name = "book"
+            else:
+                book_name = re.search(r'bookConfig.bookTitle="(\d+)"', s).group(1)
         print(book_name, page_now)
         print('Chapter: %d' % (ind + 1))
         img_fmt = get_fmt(url, img_relpath, candi_fmts, session, username, password)  # 获取图片格式
