@@ -2,7 +2,6 @@
 import os
 import fitz
 import shutil
-import random
 from PIL import Image
 
 
@@ -18,12 +17,11 @@ def img2pdf(imgs, pdf_path, quality):
     if not os.path.exists(intermediate_dir):
         os.mkdir(intermediate_dir)
 
-    # 随机取样，找出多数图像的尺寸
+    # 找出多数图像的尺寸
     page_count = len(imgs)
     sample_size = {}
-    for i in range(100):
-        ran_index = random.randint(0, page_count-1)
-        w, h = Image.open(imgs[ran_index]).size
+    for i in range(page_count):
+        w, h = Image.open(imgs[i]).size
         key = (w, h)
         if key in sample_size:
             sample_size[key] += 1
