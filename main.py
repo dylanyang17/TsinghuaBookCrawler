@@ -14,9 +14,9 @@ from utils import get_fmt
 def get_input():
     """
     获得输入的各参数
-    :return: [username, password, url, processing_num, quality, del_img, size, links_cnt]
-    分别表示username学号、password密码、url爬取的首个链接、processing_num进程数、quality PDF质量（越高则PDF越清晰但大小越大）、
-    del_img是否删除临时图片、links_cnt（链接数，也即章节数）
+    :return: [username, password, url, processing_num, quality, del_img, size, auto_resize, links_cnt]
+    分别表示 username 学号、password 密码、url 爬取的首个链接、processing_num 进程数、quality PDF 质量（越高则PDF越清晰但大小越大）、
+    del_img 是否删除临时图片、auto_resize 是否自动统一页面尺寸、links_cnt（链接数，也即章节数）
     """
     parser = argparse.ArgumentParser(description='Version: v2.1. Download e-book from http://reserves.lib.tsinghua.edu.cn. '
                                                  'By default, the number of processes is four and the temporary images '
@@ -26,12 +26,14 @@ def get_input():
     parser.add_argument('-n', help='Optional, [1~16] (4 by default). The number of processes.', type=int, default=4)
     parser.add_argument('-q', help='Optional, [3~10] (10 by default). The quality of the generated PDF. The bigger the value, the higher the resolution.', type=int, default=10)
     parser.add_argument('-p', '--preserve', help='Optional. Preserve the temporary images.', action='store_true')
+    parser.add_argument('-r', '--auto-resize', help='Optional. Automatically unify page sizes.', action='store_true')
 
     args = parser.parse_args()
     url = args.url
     processing_num = args.n
     quality = args.q
     del_img = not args.preserve
+    auto_resize = args.auto_resize
     if processing_num not in list(range(1, 17)):
         print('Please check your parameter: -n [1~16]')
         parser.print_usage()
@@ -50,11 +52,11 @@ def get_input():
     if links_cnt <= 0:
         print('There must be one chapter to download at least.')
         sys.exit()
-    return [username, password, url, processing_num, quality, del_img, links_cnt]
+    return [username, password, url, processing_num, quality, del_img, auto_resize, links_cnt]
 
 
 if __name__ == '__main__':
-    username, password, url0, processing_num, quality, del_img, links_cnt = get_input()
+    username, password, url0, processing_num, quality, del_img, auto_resize, links_cnt = get_input()
     js_relpath = 'mobile/javascript/config.js'
     img_relpath = 'files/mobile/'
     candi_fmts = ['jpg', 'png']
@@ -120,7 +122,7 @@ if __name__ == '__main__':
     if os.path.exists(pdf_path):
         print('已经生成完毕, 跳过转换')
     else:
-        img2pdf(imgs, pdf_path, quality)
+        img2pdf(imgs, pdf_path, quality, auto_resize)
         print('生成 PDF 成功：' + os.path.basename(pdf_path))
 
     if del_img:
