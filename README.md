@@ -51,7 +51,7 @@ optional arguments:
 
 一些书籍不同页面的尺寸不同，影响观感，所以加入了 -r/--auto-resize 可选参数，用于自动统一页面尺寸。
 
-例如书籍 ``http://reserves.lib.tsinghua.edu.cn/book5//00005348/00005348000/mobile/index.html`` 存在尺寸问题，可加上 -r 参数解决。完整指令为： ``python main.py -r http://reserves.lib.tsinghua.edu.cn/book5//00001044/00001044000/index.html``。
+例如书籍 ``http://reserves.lib.tsinghua.edu.cn/book5//00005348/00005348000/mobile/index.html`` 存在尺寸问题，可加上 -r 参数解决。完整指令为： ``python main.py -r http://reserves.lib.tsinghua.edu.cn/book5//00005348/00005348000/mobile/index.html``。
 
 #### 多链接书籍下载——章节数参数
 
