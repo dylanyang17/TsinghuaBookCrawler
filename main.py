@@ -42,10 +42,10 @@ def get_input():
         print('Please check your parameter: -q [3~11]')
         parser.print_usage()
         sys.exit()
-    print('Student ID:', end='')
+    print('Student ID: ', end='')
     username = input()
-    password = getpass.getpass('Password:')
-    links_cnt = input('Number of chapters(1 by default):')
+    password = getpass.getpass('Password: ')
+    links_cnt = input('Number of chapters(1 by default): ')
     if links_cnt == '':
         links_cnt = 1
     links_cnt = int(links_cnt)
