@@ -18,7 +18,7 @@ def get_input():
     分别表示 username 学号、password 密码、url 爬取的首个链接、processing_num 进程数、quality PDF 质量（越高则PDF越清晰但大小越大）、
     del_img 是否删除临时图片、auto_resize 是否自动统一页面尺寸、links_cnt（链接数，也即章节数）
     """
-    parser = argparse.ArgumentParser(description='Version: v2.1. Download e-book from http://reserves.lib.tsinghua.edu.cn. '
+    parser = argparse.ArgumentParser(description='Version: v2.1.3. Download e-book from http://reserves.lib.tsinghua.edu.cn. '
                                                  'By default, the number of processes is four and the temporary images '
                                                  'will not be preserved. \nFor example, '
                                                  '"python main.py http://reserves.lib.tsinghua.edu.cn/book5//00004634/00004634000/mobile/index.html".')

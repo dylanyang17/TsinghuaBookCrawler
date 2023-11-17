@@ -21,9 +21,9 @@ python 版本为 python3，使用 requirements.txt 一键安装依赖：``pip in
 使用 ``python main.py -h`` 可以打印帮助信息：
 
 ```
-usage: main.py [-h] [-n N] [-q Q] [-p] url
+usage: main.py [-h] [-n N] [-q Q] [-p] [-r] url
 
-Version: v2.1. Download e-book from http://reserves.lib.tsinghua.edu.cn. By
+Version: v2.1.3. Download e-book from http://reserves.lib.tsinghua.edu.cn. By
 default, the number of processes is four and the temporary images will not be
 preserved. For example, "python main.py http://reserves.lib.tsinghua.edu.cn/bo
 ok5//00004634/00004634000/mobile/index.html".
@@ -38,21 +38,26 @@ optional arguments:
                   generated PDF. The bigger the value, the higher the
                   resolution.
   -p, --preserve  Optional. Preserve the temporary images.
+  -r, --auto-resize  Optional. Automatically unify page sizes.
 ```
 
-一般来说不加参数使用即可，默认进程数为4。例子如上帮助信息所述，在存放main.py的目录下用命令行执行：``"python main.py http://reserves.lib.tsinghua.edu.cn/book5//00004634/00004634000/mobile/index.html``，在提示输入用户名和密码(密码不会显示)以及章节数后，将自动下载到download子目录下。
+一般来说不加参数使用即可，默认进程数为4。例子如上帮助信息所述，在存放main.py的目录下用命令行执行：``"python main.py http://reserves.lib.tsinghua.edu.cn/book5//00004634/00004634000/mobile/index.html``，在提示输入用户名和密码(密码不会显示)以及章节数后，将自动下载到 download 子目录下。
 
 对于一般的单章节书籍来说，在提示输入章节数时直接回车跳过即可。
 
 ### 高级
 
-未特别指明的功能则在 v2.0 中仍然保留。
+#### 自动统一页面尺寸 (beta)
+
+一些书籍不同页面的尺寸不同，影响观感，所以加入了 -r/--auto-resize 可选参数，用于自动统一页面尺寸。
+
+例如书籍 ``http://reserves.lib.tsinghua.edu.cn/book5//00005348/00005348000/mobile/index.html`` 存在尺寸问题，可加上 -r 参数解决。完整指令为： ``python main.py -r http://reserves.lib.tsinghua.edu.cn/book5//00001044/00001044000/index.html``。
 
 #### 多链接书籍下载——章节数参数
 
-章节数为 v1.2 中加入特性，实际上指链接数。主要是为了方便下载给出了多个链接的少部分书目。此时只需要将第一个链接作为 url 传入，并且提示输入章节数时输入实际链接数即可。
+章节数为 v1.2 中加入的特性，实际上指链接数。主要是为了方便下载给出了多个链接的少部分书目。此时只需要将第一个链接作为 url 传入，并且提示输入章节数时输入实际链接数即可。
 
-例如书籍：``http://reserves.lib.tsinghua.edu.cn/Search/BookDetail?bookId=3cf9814a-33ce-4489-b025-c58140c26263``，找到其第一个链接之后，执行 ``"python main.py http://reserves.lib.tsinghua.edu.cn/book5//00001044/00001044000/index.html``，并在提示输入章节数时输入 5 即可。
+例如书籍：``http://reserves.lib.tsinghua.edu.cn/Search/BookDetail?bookId=3cf9814a-33ce-4489-b025-c58140c26263``，找到其第一个链接之后，执行 ``python main.py http://reserves.lib.tsinghua.edu.cn/book5//00001044/00001044000/index.html``，并在提示输入章节数时输入 5 即可。
 
 #### 关于清晰度
 
@@ -61,6 +66,10 @@ v2.0 版本以上：由于使用新接口，只有唯一版本图片，目前测
 低于 v2.0 版本的描述：``-s {1, 2, 3}`` 可以显式设定清晰度，一般来说, 1、2、3 对应的清晰度依次递增，然而存在一些特例。故在 v1.2.1 版本中加入了对清晰度的自动选择（而不是默认``-s 3``），在没有指定清晰度时，将自动找到最高清晰度进行下载。
 
 ## 特性
+
+### v2.1.3 —— 2023/11/17
+
+* 增加了 -r/--auto-resize 参数，可以自动统一页面尺寸。
 
 ### v2.1.2 —— 2023/9/18
 
@@ -134,11 +143,12 @@ v2.0 版本以上：由于使用新接口，只有唯一版本图片，目前测
 * 感谢 Thinzhang 同学反馈教参平台采用的新接口相关问题，由此更新了 v2.0 版本；
 * 感谢 zhaofeng-shu33 和 HongYurui 同学反馈 PyMyPDF 版本问题，由此更新了 v2.1.1 版本。
 * 感谢 Tsingshanyuan 同学反馈部分书籍网页信息中不存在 book_name 的问题，感谢 Long-Miao 同学反馈部分书籍存在章节序号不连续的问题，由此更新了 v2.1.2 版本。
+* 感谢 Long-Miao 同学反馈页面尺寸统一性问题，并提交初步 PR，由此更新了 v2.1.3 版本。
 
 近期时间有限，非常感谢各位反馈的同学，尤其是 zhaofeng-shu33, Tsingshanyuan 和 Long-Miao 同学直接提 PR 完成了修复。
 
 ## 说明
 
-作者邮箱：315629555@qq.com, yangyr17@mails.tsinghua.edu.cn
+作者邮箱：315629555@qq.com, yyr22@mails.tsinghua.edu.cn
 
 能力和时间均有限，若有写得不好的地方，还望指正。
