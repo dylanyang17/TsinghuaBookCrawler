@@ -1,6 +1,23 @@
 import sys
+import re
 from urllib.parse import urljoin
 from auth_get import auth_get
+
+IMG_SUFFIXES = ['jpeg', 'jpg', 'png']
+
+
+def get_chap_page(path):
+    m = re.match(r'(?P<chap>\d+)_(?P<page>\d+)\.[^.]*$', path)
+    chap = int(m.group('chap'))
+    page = int(m.group('page'))
+    return (chap, page)
+
+
+def is_image(path):
+    for suf in IMG_SUFFIXES:
+        if re.match(fr'\d+_\d+\.{suf}$', path) is not None:
+            return True
+    return False
 
 
 def get_fmt(url, img_relpath, candi_fmts, session, username, password):

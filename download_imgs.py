@@ -2,12 +2,16 @@
 import os
 import sys
 import random
+import signal
 
 import requests
 from multiprocessing.pool import Pool
-from urllib.parse import urljoin
+from multiprocessing import Value
+from urllib.parse import urljoin, quote
 from auth_get import auth_get
 
+
+terminate_flag = Value('b', False)
 
 def randstr(num):
     H = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -25,19 +29,27 @@ def get_tmpname():
     return '.tmp' + randstr(16)
 
 
-def download_one(session, username, password, url, save_dir, filename):
+def download_one(botu_read_kernel, img_path, save_dir, filename):
     """
     下载一张图片
-    :param session: Session 类型
-    :param url: 下载的url
+    :param botu_read_kernel: token
+    :param img_path: 下载的url
     :param save_dir: 保存的目录
     :param filename: 文件名
+    :param terminate_flag: 终止标志
     :return:
     """
+    with terminate_flag.get_lock(): 
+        if terminate_flag.value:
+            return
+    
+    url_template = 'https://ereserves.lib.tsinghua.edu.cn/readkernel/JPGFile/DownJPGJsNetPage?filePath={img_path}'
+
     try:
         save_path = os.path.join(save_dir, filename)
         try:
-            res = auth_get(url, session, username, password, timeout=15)
+            res = requests.get(url_template.format(img_path=quote(img_path)), cookies={'BotuReadKernel': botu_read_kernel})
+            print(url_template.format(img_path=quote(img_path)))
         except requests.exceptions.Timeout:
             print('请求超时:', filename)
             return
@@ -52,42 +64,65 @@ def download_one(session, username, password, url, save_dir, filename):
         os.rename(tmp_path, save_path)
         print('下载图片成功：' + filename)
     except KeyboardInterrupt:
-        pid = os.getpid()
-        print('子进程 %d 被终止...' % pid)
+        with terminate_flag.get_lock():
+            terminate_flag.value = True
     except Exception as e:
         print(e)
 
 
-def download_imgs(session, username, password, img_urls, page_count, save_dir, processing_num):
+def download_imgs(botu_read_kernel, page_urls, save_dir, processing_num):
     """
     下载一本书的所有图片
-    :param session: Session类型
-    :param username: 用户名
-    :param password: 密码
-    :param img_urls: 要下载的所有图片路径
-    :param page_count: 页数
+    :param botU_read_kernel: 下载token
+    :param page_urls: 要下载的所有图片路径
     :param save_dir: 保存的目录
     :param processing_num: 进程数
     :return:
     """
     os.makedirs(save_dir, exist_ok=True)
+
+    pool = None
+
+    def terminate_pool(sig, frame):
+        print('terminating')
+        with terminate_flag.get_lock():
+            terminate_flag.value = True
+        if pool is None:
+            exit(0)
+
+
+    signal.signal(signal.SIGINT, terminate_pool)
+    signal.signal(signal.SIGTERM, terminate_pool)
+
     fail = True
-    img_fmt = img_urls[0][img_urls[0].rfind('.')+1:]
+
     try:
         while fail:
-            p = Pool(processing_num)
+            pool = Pool(processing_num)
             fail = False
-            for i, img_url in enumerate(img_urls):
-                filename = '%d.%s' % (i+1, img_fmt)
-                path = os.path.join(save_dir, filename)
-                if os.path.exists(path):
-                    print('已下载：%s, 跳过' % filename)
-                    continue
-                fail = True
-                p.apply_async(download_one, args=(session, username, password, img_url, save_dir, filename))
-            p.close()
-            p.join()
-    except KeyboardInterrupt:
-        print('父进程被终止')
-        pid = os.getpid()
-        os.popen('taskkill.exe /f /pid:%d' % pid)
+            download_names = []
+            for chap_num, img_urls in enumerate(page_urls):
+                for page_num, img_path in enumerate(img_urls):
+                    filename = str(chap_num) + '_' + str(page_num) + '.' + img_path.split('/')[-1].split('.')[-1]
+                    path = os.path.join(save_dir, filename)
+                    if os.path.exists(path):
+                        print('已下载：%s, 跳过' % filename)
+                        continue
+                    fail = True
+                    download_names.append(filename)
+                    pool.apply_async(download_one, args=(botu_read_kernel, img_path, save_dir, filename), error_callback=lambda x: print(x))
+            if len(download_names) != 0:
+                print(f'即将下载：', end='')
+                for name in download_names:
+                    print(name, end=' ')
+                print(f'\n共需下载图片数：{len(download_names)}')
+            pool.close()
+            pool.join()
+            pool = None
+
+            with terminate_flag.get_lock():
+                if terminate_flag.value:
+                    exit(0)
+    finally:
+        if pool:
+            pool.terminate()

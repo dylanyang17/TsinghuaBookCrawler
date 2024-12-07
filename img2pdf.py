@@ -26,7 +26,6 @@ def img2pdf(imgs: list, pdf_path: str, quality: int, auto_resize: bool):
         sample_size.setdefault(key, 0)
         sample_size[key] += 1
 
-    # print(sample_size)
     common_size = max(sample_size, key=sample_size.get)
 
     with fitz.open() as doc:
