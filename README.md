@@ -23,7 +23,7 @@ python 版本为 python3（已测试 python 3.7-3.13），使用 requirements.tx
 ```
 usage: main.py [-h] -t TOKEN [-n N] [-q Q] [-d] [-r] url
 
-Version: v3.0. Download e-book from http://ereserves.lib.tsinghua.edu.cn. By default, the
+Version: v3.1. Download e-book from http://ereserves.lib.tsinghua.edu.cn. By default, the
 number of processes is four and the temporary images WILL BE preserved. For example, "python
 main.py https://ereserves.lib.tsinghua.edu.cn/bookDetail/c01e1db11c4041a39db463e810bac8f9
 4af518935a1ec46ef --token eyJhb...". Note that you need to manually login the ereserves
@@ -49,7 +49,7 @@ options:
 
 必需参数说明：
 * 链接：书籍的详情页面链接，例如 https://ereserves.lib.tsinghua.edu.cn/bookDetail/c01e1db11c4041a39db463e810bac8f9
-* token：在浏览器中用 F12 打开开发者工具，选择 “Network”。此时登录教参平台（注意需要先打开开发者工具，再登录），可以看到一条 “index?token=eyJh...” 的请求，等号之后的内容即为 token，复制下来作为参数传递给程序即可。
+* token：在浏览器中用 F12 打开开发者工具，选择 “Network”。此时登录教参平台（**注意需要先打开开发者工具，再完成登录**），可以看到一条 “index?token=eyJh...” 的请求，等号之后的内容即为 token，复制下来作为参数传递给程序即可。
 
 
 ### 高级
@@ -59,6 +59,10 @@ options:
 一些书籍不同页面的尺寸不同，影响观感，所以加入了 -r/--auto-resize 可选参数，用于自动统一页面尺寸。
 
 ## 特性
+
+### v3.1 —— 2025/12/21
+
+新增 pdf 目录生成以及书名提取功能。
 
 ### v3.0 —— 2024/11/7
 
@@ -148,9 +152,10 @@ options:
 * 感谢 Tsingshanyuan 同学反馈部分书籍网页信息中不存在 book_name 的问题，感谢 Long-Miao 同学反馈部分书籍存在章节序号不连续的问题，由此更新了 v2.1.2 版本。
 * 感谢 Long-Miao 同学反馈页面尺寸统一性问题，并提交初步 PR，由此更新了 v2.1.3 版本。
 * 感谢 baron0426 同学对 ereserves 新版教参平台 API 的分析，并完成了对应的核心代码编写，以此为基础更新了 v3.0 版本。
+* 感谢 Satan-MJ 同学的 PR，支持 pdf 目录生成以及书名提取功能，由此更新 v3.1 版本。
 
 
-近期时间有限，非常感谢各位反馈的同学，尤其是 zhaofeng-shu33, Tsingshanyuan， Long-Miao 直接提 PR 完成了修复。此外，特别感谢 baron0426 对 v3.0 版本的贡献。
+近期时间有限，非常感谢各位反馈的同学，尤其是 zhaofeng-shu33, Tsingshanyuan, Long-Miao 直接提 PR 完成了修复。此外，特别感谢 baron0426 对 v3.0 版本的贡献、以及 Satan-MJ 对 v3.1 版本的贡献。
 
 ## 说明
 
