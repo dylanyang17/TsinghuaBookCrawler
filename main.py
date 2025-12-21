@@ -17,7 +17,7 @@ def get_input():
     分别表示 url 爬取的首个链接、token、processing_num 进程数、quality PDF 质量（越高则PDF越清晰但大小越大）、
     del_img 是否删除临时图片、auto_resize 是否自动统一页面尺寸
     """
-    parser = argparse.ArgumentParser(description='Version: v3.0. Download e-book from http://ereserves.lib.tsinghua.edu.cn. '
+    parser = argparse.ArgumentParser(description='Version: v3.1. Download e-book from http://ereserves.lib.tsinghua.edu.cn. '
                                                  'By default, the number of processes is four and the temporary images '
                                                  'WILL BE preserved. \nFor example, '
                                                  '"python main.py https://ereserves.lib.tsinghua.edu.cn/bookDetail/c01e1db11c4041a39db463e810bac8f9 --token eyJhb...". \n'
@@ -114,9 +114,9 @@ if __name__ == '__main__':
 
     imgs = list(map(lambda x: os.path.join(save_dir, x), imgs))
     img2pdf(imgs, pdf_path, quality, auto_resize)
-    print('生成 PDF 成功：' + os.path.basename(pdf_path))
+    print('生成 PDF 成功：' + pdf_path)
     add_toc(pdf_path, named_pdf_path, chap_front)
-    print('添加目录完成')
+    print('添加目录完成, 最终 pdf 文件：' + named_pdf_path)
 
     if del_img:
         for img in imgs:
