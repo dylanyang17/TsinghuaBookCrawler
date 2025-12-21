@@ -3,3 +3,4 @@ downloads/
 *.swp
 .idea/
 __pycache__/
+venv/

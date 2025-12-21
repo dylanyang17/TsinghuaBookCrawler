@@ -8,6 +8,7 @@ import os
 from download_imgs import download_imgs
 from img2pdf import img2pdf
 from utils import is_image, get_chap_page
+from add_toc import add_toc
 
 def get_input():
     """
@@ -60,7 +61,8 @@ def get_scan_id(url, token):
 def get_book_chapters(botu_read_kernel, scan_id):
     url = 'https://ereserves.lib.tsinghua.edu.cn/readkernel/KernelAPI/BookInfo/selectJgpBookChapters'
     res = requests.post(url, headers={'BotuReadKernel': botu_read_kernel}, data={'SCANID': scan_id})
-    return [x['EMID'] for x in res.json()['data']]
+    json_data = res.json()['data']
+    return [x['EMID'] for x in json_data], [x['EFRAGMENTNAME'] for x in json_data]
 
 
 def get_book_pages(botu_read_kernel, book_real_id, emids):
@@ -72,12 +74,21 @@ def get_book_pages(botu_read_kernel, book_real_id, emids):
     return page_urls
 
 
+def get_chapter_front(imgs, chap_names):
+    chap_front = {}
+    for i, img in enumerate(imgs):
+        chap, page = get_chap_page(img)
+        if page == 0:
+            chap_front[chap_names[chap]] = i
+    return chap_front
+
+
 if __name__ == '__main__':
     url, token, processing_num, quality, del_img, auto_resize = get_input()
     query_chapters_url  = 'https://ereserves.lib.tsinghua.edu.cn/readkernel/KernelAPI/BookInfo/selectJgpBookChapters'
     query_chapter_url = 'https://ereserves.lib.tsinghua.edu.cn/readkernel/KernelAPI/BookInfo/selectJgpBookChapter'
     botu_read_kernel, book_real_id, scan_id = get_scan_id(url, token)
-    emids = get_book_chapters(botu_read_kernel, scan_id)
+    emids, chap_names = get_book_chapters(botu_read_kernel, scan_id)
     page_urls = get_book_pages(botu_read_kernel, book_real_id, emids)
 
     save_dir = os.path.join('downloads', book_real_id)
@@ -93,17 +104,19 @@ if __name__ == '__main__':
     print('原始大小 PDF 转换中... quality：%d' % quality)
 
     imgs = list(sorted(filter(is_image, os.listdir(save_dir)), key=get_chap_page))
-    imgs = list(map(lambda x: os.path.join(save_dir, x), imgs))
+    chap_front = get_chapter_front(imgs, chap_names)
+    chap_front = sorted(chap_front.items(), key=lambda x: x[1])
+    named_pdf_path = os.path.join(save_dir, chap_front[0][0] + '.pdf')
 
     if len(imgs) == 0:
         print('图片格式可能未列入，请检查 utils.py 中的 IMG_SUFFIXES')
         exit(1)
-    
-    if os.path.exists(pdf_path):
-        print('已经生成完毕, 跳过转换')
-    else:
-        img2pdf(imgs, pdf_path, quality, auto_resize)
-        print('生成 PDF 成功：' + os.path.basename(pdf_path))
+
+    imgs = list(map(lambda x: os.path.join(save_dir, x), imgs))
+    img2pdf(imgs, pdf_path, quality, auto_resize)
+    print('生成 PDF 成功：' + os.path.basename(pdf_path))
+    add_toc(pdf_path, named_pdf_path, chap_front)
+    print('添加目录完成')
 
     if del_img:
         for img in imgs:
